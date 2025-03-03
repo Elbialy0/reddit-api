@@ -1,0 +1,4 @@
+package com.elbialy.reddit.model;
+
+public class VoteType {
+}
