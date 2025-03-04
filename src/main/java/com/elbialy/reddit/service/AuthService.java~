@@ -34,8 +34,8 @@ public class AuthService {
         user.setEnabled(false);
         userRepository.save(user);
        String token = generateVerificationToken(user);
-       mailService.sendEmail(new NotificationEmail("Please Activate your account",user.getEmail(),"thank you "+
-               "http://localhost:8080/api/auth/accountVerification/"+token));
+//       mailService.sendEmail(new NotificationEmail("Please Activate your account",user.getEmail(),"thank you "+
+//               "http://localhost:8080/api/auth/accountVerification/"+token));
     }
 
     private String generateVerificationToken(User user) {
