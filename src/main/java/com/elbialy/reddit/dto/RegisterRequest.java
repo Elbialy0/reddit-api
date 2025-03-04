@@ -1,9 +1,9 @@
 package com.elbialy.reddit.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import lombok.*;
+        import jakarta.validation.constraints.Email;
+        import jakarta.validation.constraints.NotBlank;
+        import jakarta.validation.constraints.NotEmpty;
+        import lombok.*;
 
 @Data
 @AllArgsConstructor

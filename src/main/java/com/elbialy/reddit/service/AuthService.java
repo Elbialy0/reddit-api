@@ -2,6 +2,7 @@ package com.elbialy.reddit.service;
 
 import com.elbialy.reddit.dto.RegisterRequest;
 import com.elbialy.reddit.model.User;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.time.Instant;
 public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
+    @Transactional
     public void signup(RegisterRequest registerRequest){
         User user = new User();
         user.setEmail(registerRequest.getEmail());
