@@ -17,7 +17,7 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf->csrf.disable()) // disable csrf
-                .authorizeHttpRequests(auth->auth.requestMatchers("/api/auth/signup").permitAll()
+                .authorizeHttpRequests(auth->auth.requestMatchers("/api/auth/**","/swagger-ui").permitAll()
                 .anyRequest().authenticated());// make "/api/auth/**" public and other endpoints private
 http.httpBasic(withDefaults());
         return http.build();

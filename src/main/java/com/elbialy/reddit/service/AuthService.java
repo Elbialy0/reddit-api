@@ -1,6 +1,7 @@
 package com.elbialy.reddit.service;
 
 import com.elbialy.reddit.dto.RegisterRequest;
+import com.elbialy.reddit.exceptions.SpringRedditException;
 import com.elbialy.reddit.model.NotificationEmail;
 import com.elbialy.reddit.model.User;
 import com.elbialy.reddit.model.VerificationToken;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -46,4 +48,20 @@ public class AuthService {
         verificationTokenRepository.save(verificationToken);
         return token;
     }
+
+    public void verifyAccount(String token) {
+      Optional<VerificationToken> actualToken = verificationTokenRepository.findVerificationTokenByToken(token);
+        actualToken.orElseThrow(()->new SpringRedditException("Invalid token!"));
+        fetchUser(actualToken);
+
+    }
+@Transactional
+    public void fetchUser(Optional<VerificationToken> actualToken) {
+        String username = actualToken.get().getUser().getUsername();
+        User user = userRepository.findUserByUsername(username).orElseThrow(()->new SpringRedditException("User not found with name:"+username));
+        user.setEnabled(true);
+        userRepository.save(user);
+    }
+
+
 }
