@@ -38,14 +38,14 @@ public class AuthController {
         return new ResponseEntity<>("Verification successfully",HttpStatus.OK);
     }
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) throws AccessDeniedException {
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) throws AccessDeniedException {
         String jwt = null;
         Authentication authentication = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getUsername()
                 ,loginRequest.getPassword());
        Authentication authenticationResponse = authenticationManager.authenticate(authentication);
        if (null!=authenticationResponse && authenticationResponse.isAuthenticated()){
            jwt=jwtGenerator.jwtGenerator(authenticationResponse);
-           return  ResponseEntity.status(HttpStatus.OK).header("Authorization",jwt).body(new LoginResponse(jwt,"success"));
+           return  ResponseEntity.status(HttpStatus.OK).header("Authorization",jwt).body("sucessfully logged in");
        } else throw new AccessDeniedException("Bad credentials");
 
 

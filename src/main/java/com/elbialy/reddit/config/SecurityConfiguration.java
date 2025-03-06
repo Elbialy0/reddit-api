@@ -47,8 +47,12 @@ public class SecurityConfiguration {
                     }
                 }))
                 .addFilterBefore(new JwtValidatorFilter(), BasicAuthenticationFilter.class)// disable csrf
-                .authorizeHttpRequests(auth->auth.requestMatchers("/api/auth/**","/swagger-ui").permitAll()
+                .authorizeHttpRequests(auth->auth.requestMatchers("/api/auth/**",                    "/swagger-ui/**",  // Allow Swagger UI
+                                "/v3/api-docs/**", // Allow OpenAPI JSON
+                                "/swagger-resources/**",
+                                "/webjars/**").permitAll()
                 .anyRequest().authenticated());// make "/api/auth/**" public and other endpoints private
+
         return http.build();
     }
     @Bean
