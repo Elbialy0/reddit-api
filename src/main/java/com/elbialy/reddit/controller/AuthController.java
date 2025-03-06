@@ -45,7 +45,7 @@ public class AuthController {
        Authentication authenticationResponse = authenticationManager.authenticate(authentication);
        if (null!=authenticationResponse && authenticationResponse.isAuthenticated()){
            jwt=jwtGenerator.jwtGenerator(authenticationResponse);
-           return new ResponseEntity<>(new LoginResponse(jwt,"success"),HttpStatus.OK);
+           return  ResponseEntity.status(HttpStatus.OK).header("Authorization",jwt).body(new LoginResponse(jwt,"success"));
        } else throw new AccessDeniedException("Bad credentials");
 
 
