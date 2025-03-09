@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/subreddit")
 @AllArgsConstructor
@@ -17,8 +19,7 @@ public class SubRedditController {
         return ResponseEntity.status(HttpStatus.CREATED).body(subRedditService.save(subRedditDto));
     }
     @GetMapping
-    public ResponseEntity<SubRedditDto> getAllSubReddit(){
-        return null;
-
+    public ResponseEntity<List<SubRedditDto>> getAllSubReddit(){
+        return ResponseEntity.status(HttpStatus.OK).body(subRedditService.getAll());
     }
 }
