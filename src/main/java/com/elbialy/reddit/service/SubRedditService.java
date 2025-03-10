@@ -1,6 +1,7 @@
 package com.elbialy.reddit.service;
 
 import com.elbialy.reddit.dto.SubRedditDto;
+import com.elbialy.reddit.exceptions.SpringRedditException;
 import com.elbialy.reddit.mapper.SubRedditMapper;
 import com.elbialy.reddit.model.Subreddit;
 import com.elbialy.reddit.repository.SubRedditRepository;
@@ -30,6 +31,10 @@ public class SubRedditService {
     public List<SubRedditDto> getAll(){
         return subRedditRepository.findAll().stream().map(subRedditMapper::SubRedditToDTO).collect(Collectors.toList());
 
+    }
+    public SubRedditDto getSubReddit(Long id){
+        return subRedditMapper.SubRedditToDTO(subRedditRepository.findById(id)
+                .orElseThrow(()->new SpringRedditException("Subreddit not found")));
     }
 
 
