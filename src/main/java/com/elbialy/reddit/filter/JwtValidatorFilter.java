@@ -27,8 +27,9 @@ public class JwtValidatorFilter extends OncePerRequestFilter {
         String jwt = request.getHeader("Authorization");
         if(jwt!=null){
             Environment env = getEnvironment();
-            if(null!= env){
+            if(null!= env&& jwt.startsWith("Bearer ")){
                 try {
+                    jwt = jwt.substring(7);
                     String secret = env.getProperty(Constant.JWT_SECRET, Constant.JWT_SECRET_DEFAULT_KEY);
 
                     SecretKey secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
