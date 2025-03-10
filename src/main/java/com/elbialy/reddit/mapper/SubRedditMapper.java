@@ -7,15 +7,16 @@ import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface SubRedditMapper {
     SubRedditMapper INSTANCE = Mappers.getMapper(SubRedditMapper.class);
     @Mapping(target = "numberOfPosts",expression = "java(mapPosts(subreddit.getPosts()))")
     SubRedditDto SubRedditToDTO(Subreddit subreddit);
-    default Integer maPosts(List<Post>posts){
+    default Integer mapPosts(List<Post>posts){
         return posts.size();
     }
     @InheritInverseConfiguration

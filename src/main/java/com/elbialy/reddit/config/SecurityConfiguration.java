@@ -1,6 +1,7 @@
 package com.elbialy.reddit.config;
 
 import com.elbialy.reddit.filter.JwtValidatorFilter;
+import com.elbialy.reddit.mapper.SubRedditMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -67,5 +68,6 @@ public class SecurityConfiguration {
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
+
 
 }
