@@ -23,5 +23,14 @@ public class CommentsController {
     public ResponseEntity<List<CommentsDto>> getAllCommentsForPost(@PathVariable Long postId){
         return ResponseEntity.status(HttpStatus.OK).body(commentsService.getAllCommentsForPost(postId));
     }
+    @GetMapping("/user/{username}")
+    public ResponseEntity<List<CommentsDto>> getAllCommentsForUser(@PathVariable String username){
+        return ResponseEntity.status(HttpStatus.OK).body(commentsService.getAllCommentsForUser(username));
+    }
+    @DeleteMapping("/delete/{commentId}")
+    public ResponseEntity<String > deleteComment(@PathVariable Long commentId){
+        commentsService.deleteComment(commentId);
+        return ResponseEntity.status(HttpStatus.OK).body("Comment deleted successfully");
+    }
 
 }

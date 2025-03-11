@@ -46,4 +46,14 @@ public class CommentsService {
         List<Comment> comments = commentRepository.findAllByPost(post);
         return comments.stream().map(commentMapper::mapToDto).collect(Collectors.toList());
     }
+    public List<CommentsDto> getAllCommentsForUser(String userName) {
+        User user = userRepository.findUserByUsername(userName).orElseThrow(()->new RuntimeException("User not found"));
+        List<Comment> comments = commentRepository.findAllByUser(user);
+        return comments.stream().map(commentMapper::mapToDto).collect(Collectors.toList());
+    }
+    @Transactional
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId).orElseThrow(()->new RuntimeException("Comment not found"));
+        commentRepository.delete(comment);
+    }
 }
