@@ -5,6 +5,7 @@ import com.elbialy.reddit.dto.PostResponse;
 import com.elbialy.reddit.exceptions.SpringRedditException;
 import com.elbialy.reddit.mapper.PostMapper;
 import com.elbialy.reddit.model.Post;
+import com.elbialy.reddit.model.Subreddit;
 import com.elbialy.reddit.model.User;
 import com.elbialy.reddit.repository.PostRepository;
 import com.elbialy.reddit.repository.SubRedditRepository;
@@ -46,5 +47,18 @@ public class PostService {
                 .map(postMapper::postToDto)
                 .collect(Collectors.toList());
     }
-//    public List<PostResponse>
+
+    public List<PostResponse> getPostsBySubreddit(Long subredditId){
+        Subreddit subreddit = subRedditRepository.findById(subredditId)
+                .orElseThrow(()->new SpringRedditException("Subreddit not found"));
+        List<Post> posts = postRepository.findAllBySubreddit(subreddit);
+        return posts.stream().map(postMapper::postToDto).collect(Collectors.toList());
+
+    }
+    public List<PostResponse> getPostsByUsername(String username){
+        User user = userRepository.findUserByUsername(username)
+                .orElseThrow(()->new SpringRedditException("User not found"));
+        List<Post> posts = postRepository.findAllByUser(user);
+        return  posts.stream().map(postMapper::postToDto).collect(Collectors.toList());
+    }
 }
