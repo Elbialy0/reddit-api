@@ -15,7 +15,7 @@ import java.util.List;
 public class CommentsController {
     private final CommentsService commentsService;
     @PostMapping
-    public ResponseEntity<String> createComment(CommentsDto commentsDto){
+    public ResponseEntity<String> createComment(@RequestBody CommentsDto commentsDto){
         commentsService.createComment(commentsDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("Comment sent successfully");
     }
