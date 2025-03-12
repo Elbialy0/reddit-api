@@ -23,7 +23,7 @@ public class VoteService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     @Transactional
-    public void vote(VoteDto voteDto) {
+    public void vote(VoteDto voteDto) throws Exception {
         Post post = postRepository.findById(voteDto.getPostId()).orElseThrow(()->new RuntimeException("Post not found"));
         Optional<Vote> voteByPostAndUser = voteRepository.findTopByPostAndUser(post,userRepository
                 .findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
@@ -38,6 +38,7 @@ public class VoteService {
             post.setVoteCount(post.getVoteCount()-1);
         }
         voteRepository.save(mapToVote(voteDto , post));
+        postRepository.save(post);
 
 
     }

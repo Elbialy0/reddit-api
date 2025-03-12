@@ -51,7 +51,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth->auth.requestMatchers("/api/auth/**",                    "/swagger-ui/**",  // Allow Swagger UI
                                 "/v3/api-docs/**", // Allow OpenAPI JSON
                                 "/swagger-resources/**",
-                                "/webjars/**").permitAll()
+                                "/webjars/**","/error").permitAll()
                 .anyRequest().authenticated());// make "/api/auth/**" public and other endpoints private
 
         return http.build();

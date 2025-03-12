@@ -11,4 +11,6 @@ import java.util.Optional;
 @Repository
 public interface VoteRepository extends JpaRepository<Vote,Long> {
     Optional<Vote> findTopByPostAndUser(Post post, User userNotFound);
+
+    Optional<Vote> findTopByPostAndUserOrderByVoteIdDesc(Post post, Optional<User> userByUsername);
 }

@@ -1,7 +1,11 @@
 package com.elbialy.reddit.exceptions;
 
 public class SpringRedditException extends RuntimeException{
-    public SpringRedditException(String ex){
-        super(ex);
+    public SpringRedditException(String exMessage, Exception exception) {
+        super(exMessage, exception);
+    }
+
+    public SpringRedditException(String exMessage) {
+        super(exMessage);
     }
 }
