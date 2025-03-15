@@ -3,8 +3,10 @@ package com.elbialy.reddit.service;
 import com.elbialy.reddit.dto.RegisterRequest;
 import com.elbialy.reddit.exceptions.SpringRedditException;
 import com.elbialy.reddit.model.NotificationEmail;
+import com.elbialy.reddit.model.RefreshToken;
 import com.elbialy.reddit.model.User;
 import com.elbialy.reddit.model.VerificationToken;
+import com.elbialy.reddit.repository.RefreshTokenRepository;
 import com.elbialy.reddit.repository.UserRepository;
 import com.elbialy.reddit.repository.VerificationTokenRepository;
 import jakarta.transaction.Transactional;
@@ -27,6 +29,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailService mailService;
+    private  final RefreshTokenRepository refreshTokenRepository;
     @Transactional
     public void signup(RegisterRequest registerRequest){
         User user = new User();
@@ -62,6 +65,17 @@ public class AuthService {
         User user = userRepository.findUserByUsername(username).orElseThrow(()->new SpringRedditException("User not found with name:"+username));
         user.setEnabled(true);
         userRepository.save(user);
+    }
+    @Transactional
+    public void  saveJwt(String token) {
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setToken(token);
+        refreshToken.setCreatedDate(Instant.now());
+        refreshTokenRepository.save(refreshToken);
+    }
+    public  Boolean validateJwt(String token) {
+        Optional<RefreshToken> refreshToken = Optional.ofNullable(refreshTokenRepository.findByToken(token));
+        return refreshToken.isPresent();
     }
 
 

@@ -87,7 +87,7 @@ public class AuthController {
                         String username = String.valueOf(claims.get("username"));
                         String authorities = String.valueOf(claims.get("authorities"));
                         Authentication authentication = new UsernamePasswordAuthenticationToken(username, null, AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
-                        jwt =jwtGenerator.jwtGenerator(authentication);
+                        jwt = jwtGenerator.jwtGenerator(authentication);
 
                     }
                 } catch (Exception ex) {
@@ -99,4 +99,13 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).header("Authorization", jwt)
                 .header("RefreshToken", refreshToken1.getToken()).body("sucessfully logged in");
     }
-}
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestHeader("RefreshToken") String refreshToken, @RequestHeader("Authorization") String jwt) {
+
+            refreshTokenService.deleteRefreshToken(refreshToken);
+            authService.saveJwt(jwt);
+            return ResponseEntity.status(HttpStatus.OK).body("successfully logged out");
+        }
+    }
+
