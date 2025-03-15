@@ -12,6 +12,7 @@ import com.elbialy.reddit.repository.VerificationTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,7 @@ import java.util.UUID;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final PasswordEncoder passwordEncoder;
@@ -64,6 +66,8 @@ public class AuthService {
         String username = actualToken.get().getUser().getUsername();
         User user = userRepository.findUserByUsername(username).orElseThrow(()->new SpringRedditException("User not found with name:"+username));
         user.setEnabled(true);
+        log.info("User {} is enabled",user.getUsername());
+        userRepository.save(user);
 
     }
     @Transactional
