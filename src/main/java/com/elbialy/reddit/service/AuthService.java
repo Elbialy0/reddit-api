@@ -39,7 +39,7 @@ public class AuthService {
         user.setUsername(registerRequest.getUsername());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
         user.setCreated(Instant.now());
-        user.setEnabled(false);
+        user.setEnabled(true);
         userRepository.save(user);
        String token = generateVerificationToken(user);
        mailService.sendEmail(new NotificationEmail("Please Activate your account",user.getEmail(),"thank you "+
@@ -64,13 +64,10 @@ public class AuthService {
 @Transactional
     public void fetchUser(Optional<VerificationToken> actualToken) {
         String username = actualToken.get().getUser().getUsername();
-        User user = userRepository.findUserByUsername(username).
-                orElseThrow(()->new SpringRedditException("User not found with name:"+username));
-        userRepository.delete(user);
+        User user = userRepository.findUserByUsername(username).orElseThrow(()->new SpringRedditException("User not found with name:"+username));
         user.setEnabled(true);
+        log.info("User {} is enabled",user.isEnabled());
         userRepository.save(user);
-
-
 
     }
     @Transactional
