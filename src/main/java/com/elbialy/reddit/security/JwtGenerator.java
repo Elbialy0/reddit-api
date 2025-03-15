@@ -4,6 +4,9 @@ import com.elbialy.reddit.Constant;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,13 +14,17 @@ import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.Date;
 import java.util.stream.Collectors;
 
 @Component
-@AllArgsConstructor
 public class JwtGenerator {
-    private final Environment env;
+    @Value("${jwt.expiration.time}")
+    private long expirationTime;
+
+    @Autowired
+    private  Environment env;
     public String jwtGenerator(Authentication authentication) {
         String jwt = null;
         if (null!=env){
@@ -32,7 +39,7 @@ public class JwtGenerator {
                     .claim("username", authentication.getName())
                     .claim("authorities",authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(",")))
                     .issuedAt(new Date())
-                    .expiration(new Date((new Date()).getTime()+30000000))
+                     .expiration(Date.from(Instant.now().plusMillis(expirationTime)))
                     .signWith(secretKey).compact();
 
 
