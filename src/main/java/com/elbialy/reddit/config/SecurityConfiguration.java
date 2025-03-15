@@ -3,6 +3,7 @@ package com.elbialy.reddit.config;
 import com.elbialy.reddit.filter.JwtValidatorFilter;
 import com.elbialy.reddit.mapper.SubRedditMapper;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -29,7 +31,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
+@AllArgsConstructor
 public class SecurityConfiguration {
+    private final JwtValidatorFilter JwtValidatorFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -47,7 +51,7 @@ public class SecurityConfiguration {
                         return corsConfiguration;
                     }
                 }))
-                .addFilterBefore(new JwtValidatorFilter(), BasicAuthenticationFilter.class)// disable csrf
+                .addFilterBefore(JwtValidatorFilter, UsernamePasswordAuthenticationFilter.class)// disable csrf
                 .authorizeHttpRequests(auth->auth.requestMatchers("/api/auth/**",                    "/swagger-ui/**",  // Allow Swagger UI
                                 "/v3/api-docs/**", // Allow OpenAPI JSON
                                 "/swagger-resources/**",

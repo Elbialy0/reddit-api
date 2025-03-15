@@ -1,7 +1,10 @@
 package com.elbialy.reddit.filter;
 
 import com.elbialy.reddit.Constant;
+import com.elbialy.reddit.exceptions.SpringRedditException;
+import com.elbialy.reddit.model.RefreshToken;
 import com.elbialy.reddit.repository.RefreshTokenRepository;
+import com.elbialy.reddit.security.JwtChecker;
 import com.elbialy.reddit.service.AuthService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,6 +14,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -24,18 +28,17 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import javax.crypto.SecretKey;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+
 @Component
-
+@RequiredArgsConstructor
 public class JwtValidatorFilter extends OncePerRequestFilter {
-
-
-
-
+    private  final JwtChecker jwtChecker;
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String jwt = request.getHeader("Authorization");
-        if(jwt!=null){
+
+        if(jwt!=null&&!jwtChecker.validateJwt(jwt)){
             Environment env = getEnvironment();
             if(null!= env&& jwt.startsWith("Bearer ")){
                 try {

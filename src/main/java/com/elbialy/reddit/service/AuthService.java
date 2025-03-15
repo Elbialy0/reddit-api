@@ -73,10 +73,7 @@ public class AuthService {
         refreshToken.setCreatedDate(Instant.now());
         refreshTokenRepository.save(refreshToken);
     }
-    public  Boolean validateJwt(String token) {
-        Optional<RefreshToken> refreshToken = Optional.ofNullable(refreshTokenRepository.findByToken(token));
-        return refreshToken.isPresent();
-    }
+
 
 
 
