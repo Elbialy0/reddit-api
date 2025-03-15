@@ -159,7 +159,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.example.MainApplication</mainClass>
+							<mainClass>com.example.reddit.Reddit.Application</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
