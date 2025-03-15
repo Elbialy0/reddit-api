@@ -64,7 +64,7 @@ public class AuthService {
         String username = actualToken.get().getUser().getUsername();
         User user = userRepository.findUserByUsername(username).orElseThrow(()->new SpringRedditException("User not found with name:"+username));
         user.setEnabled(true);
-        userRepository.save(user);
+
     }
     @Transactional
     public void  saveJwt(String token) {
