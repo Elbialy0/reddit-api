@@ -62,8 +62,7 @@ public class AuthService {
     }
 @Transactional
     public void fetchUser(Optional<VerificationToken> actualToken) {
-        String username = actualToken.get().getUser().getUsername();
-        User user = userRepository.findUserByUsername(username).orElseThrow(()->new SpringRedditException("User not found with name:"+username));
+        User user = userRepository.findById(actualToken.get().getUser().getId()).orElseThrow(()->new SpringRedditException("User not found with name:"));
         user.setEnabled(true);
         log.info("User {} is enabled",user.isEnabled());
         userRepository.save(user);

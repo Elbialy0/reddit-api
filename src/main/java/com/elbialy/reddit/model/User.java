@@ -25,4 +25,8 @@ public class User {
     private Instant created;
     @Column(columnDefinition = "TINYINT(1)")
     private boolean enabled;
+
+    public Long getId() {
+        return userId;
+    }
 }
