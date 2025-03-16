@@ -41,7 +41,6 @@ import static org.springframework.boot.logging.log4j2.Log4J2LoggingSystem.getEnv
 public class AuthController {
 
     private final AuthService authService;
-    private final AuthenticationManager authenticationManager;
     private final JwtGenerator jwtGenerator;
     private final RefreshTokenService refreshTokenService;
     private final Environment env;
@@ -59,19 +58,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) throws AccessDeniedException {
-        String jwt = null;
-        Authentication authentication = UsernamePasswordAuthenticationToken.unauthenticated(loginRequest.getUsername()
-                , loginRequest.getPassword());
-        Authentication authenticationResponse = authenticationManager.authenticate(authentication);
-        if (null != authenticationResponse && authenticationResponse.isAuthenticated()) {
-            jwt = jwtGenerator.jwtGenerator(authenticationResponse);
-            RefreshToken refreshToken = refreshTokenService.createRefreshToken();
-            return ResponseEntity.status(HttpStatus.OK).header("Authorization", jwt).
-                    header("RefreshToken", refreshToken.getToken()).body("sucessfully logged in");
-        } else throw new AccessDeniedException("Bad credentials");
-
-
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) throws AccessDeniedException {
+        return ResponseEntity.status(HttpStatus.OK).body(authService.login(loginRequest));
     }
 
     @PostMapping("/refreshToken")

@@ -9,6 +9,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.rmi.AccessException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
@@ -41,5 +42,14 @@ public class GlobalExceptionHandler {
                 "message",ex.getMessage(),
                 "path",request.getRequestURI() );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMap);
+    }
+    @ExceptionHandler(AccessException.class)
+    public ResponseEntity<Map<String, Object>>handleAccessDeniedException(Exception ex, HttpServletRequest request){
+        Map<String ,Object> errorMap = Map.of("timestamp", LocalDateTime.now(),
+                "status",HttpStatus.UNAUTHORIZED.value(),
+                "error","Unauthorized",
+                "message",ex.getMessage(),
+                "path",request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMap);
     }
 }
