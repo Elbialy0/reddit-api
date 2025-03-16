@@ -23,6 +23,6 @@ public class User {
     private String password;
     private String email;
     private Instant created;
-
+    @Column(columnDefinition = "TINYINT(1)")
     private boolean enabled;
 }
