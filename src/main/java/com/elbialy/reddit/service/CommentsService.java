@@ -2,6 +2,7 @@ package com.elbialy.reddit.service;
 
 import com.elbialy.reddit.dto.CommentsDto;
 import com.elbialy.reddit.exceptions.SpringRedditException;
+import com.elbialy.reddit.exceptions.UserNotFoundException;
 import com.elbialy.reddit.mapper.CommentMapper;
 import com.elbialy.reddit.model.Comment;
 import com.elbialy.reddit.model.NotificationEmail;
@@ -34,7 +35,8 @@ public class CommentsService {
     private final MailContentBuilder mailContentBuilder;
     @Transactional
     public void createComment(CommentsDto commentsDto) {
-        Post post  = postRepository.findById(commentsDto.getPostId()).orElseThrow(()->new RuntimeException("Post not found"));
+        Post post  = postRepository.findById(commentsDto.getPostId())
+                .orElseThrow(()->new SpringRedditException("Post not found"));
         User user = userRepository.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).orElseThrow(()->new
 
                 UsernameNotFoundException("User not found"));
@@ -43,18 +45,21 @@ public class CommentsService {
         mailService.sendEmail(new NotificationEmail(user.getUsername() +"Commmented on your post",post.getUser().getEmail(),user.getUsername()+"posted a comment on your post"));
     }
     public List<CommentsDto> getAllCommentsForPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(()->new RuntimeException("Post not found"));
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()->new SpringRedditException("Post not found"));
         List<Comment> comments = commentRepository.findAllByPost(post);
         return comments.stream().map(commentMapper::mapToDto).collect(Collectors.toList());
     }
     public List<CommentsDto> getAllCommentsForUser(String userName) {
-        User user = userRepository.findUserByUsername(userName).orElseThrow(()->new RuntimeException("User not found"));
+        User user = userRepository.findUserByUsername(userName)
+                .orElseThrow(()->new UserNotFoundException("User not found"));
         List<Comment> comments = commentRepository.findAllByUser(user);
         return comments.stream().map(commentMapper::mapToDto).collect(Collectors.toList());
     }
     @Transactional
     public void deleteComment(Long commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(()->new RuntimeException("Comment not found"));
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(()->new SpringRedditException("Comment not found"));
         commentRepository.delete(comment);
     }
 }

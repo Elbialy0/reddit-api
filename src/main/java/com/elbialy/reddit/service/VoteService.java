@@ -48,7 +48,8 @@ public class VoteService {
         return Vote.builder()
                 .voteType(voteDto.getVoteType())
                 .post(post)
-                .user(userRepository.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).orElseThrow(()->new UserNotFoundException("User not found")))
+                .user(userRepository.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
+                        .orElseThrow(()->new UserNotFoundException("User not found")))
                 .build();
     }
 }
