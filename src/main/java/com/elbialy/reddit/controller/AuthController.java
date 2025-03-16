@@ -4,8 +4,10 @@ import com.elbialy.reddit.Constant;
 import com.elbialy.reddit.dto.LoginRequest;
 import com.elbialy.reddit.dto.LoginResponse;
 import com.elbialy.reddit.dto.RegisterRequest;
+import com.elbialy.reddit.dto.UserDto;
 import com.elbialy.reddit.model.RefreshToken;
 import com.elbialy.reddit.model.User;
+import com.elbialy.reddit.model.VerificationToken;
 import com.elbialy.reddit.security.JwtGenerator;
 import com.elbialy.reddit.service.AuthService;
 import com.elbialy.reddit.service.RefreshTokenService;
@@ -51,9 +53,9 @@ public class AuthController {
     }
 
     @GetMapping("/accountVerification/{token}")
-    public ResponseEntity<String> accountVerification(@PathVariable String token) {
-        authService.verifyAccount(token);
-        return new ResponseEntity<>("Verification successfully", HttpStatus.OK);
+    public ResponseEntity<UserDto> accountVerification(@PathVariable String token) {
+        UserDto userDto = authService.verifyAccount(token);
+        return ResponseEntity.status(HttpStatus.OK).body(userDto);
     }
 
     @PostMapping("/login")

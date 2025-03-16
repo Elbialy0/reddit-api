@@ -2,6 +2,7 @@ package com.elbialy.reddit.service;
 
 import com.elbialy.reddit.dto.VoteDto;
 import com.elbialy.reddit.exceptions.SpringRedditException;
+import com.elbialy.reddit.exceptions.UserNotFoundException;
 import com.elbialy.reddit.model.Post;
 import com.elbialy.reddit.model.Vote;
 import com.elbialy.reddit.repository.PostRepository;
@@ -27,7 +28,7 @@ public class VoteService {
         Post post = postRepository.findById(voteDto.getPostId()).orElseThrow(()->new RuntimeException("Post not found"));
         Optional<Vote> voteByPostAndUser = voteRepository.findTopByPostAndUser(post,userRepository
                 .findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName())
-                .orElseThrow(()->new RuntimeException("User not found") ));
+                .orElseThrow(()->new UserNotFoundException("User not found") ));
         if (voteByPostAndUser.isPresent()&& voteByPostAndUser.get().getVoteType().equals(voteDto.getVoteType())) {
             throw new SpringRedditException("You have already "+voteDto.getVoteType()+"ed for this post");
         }
@@ -47,7 +48,7 @@ public class VoteService {
         return Vote.builder()
                 .voteType(voteDto.getVoteType())
                 .post(post)
-                .user(userRepository.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).orElseThrow(()->new RuntimeException("User not found")))
+                .user(userRepository.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).orElseThrow(()->new UserNotFoundException("User not found")))
                 .build();
     }
 }

@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.control.MappingControl;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.nio.channels.UnresolvedAddressException;
@@ -37,7 +36,7 @@ public class CommentsService {
         Post post  = postRepository.findById(commentsDto.getPostId()).orElseThrow(()->new RuntimeException("Post not found"));
         User user = userRepository.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).orElseThrow(()->new
 
-                UsernameNotFoundException("User not found"));
+                SpringRedditException("User not found"));
         Comment comment = commentMapper.map(commentsDto,post,user);
         commentRepository.save(comment);
         mailService.sendEmail(new NotificationEmail(user.getUsername() +"Commmented on your post",post.getUser().getEmail(),user.getUsername()+"posted a comment on your post"));

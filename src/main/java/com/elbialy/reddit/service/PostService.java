@@ -3,6 +3,7 @@ package com.elbialy.reddit.service;
 import com.elbialy.reddit.dto.PostRequest;
 import com.elbialy.reddit.dto.PostResponse;
 import com.elbialy.reddit.exceptions.SpringRedditException;
+import com.elbialy.reddit.exceptions.UserNotFoundException;
 import com.elbialy.reddit.mapper.PostMapper;
 import com.elbialy.reddit.model.Post;
 import com.elbialy.reddit.model.Subreddit;
@@ -30,7 +31,7 @@ public class PostService {
     @Transactional
     public PostResponse createPost(PostRequest postRequest){
         User user = userRepository.findUserByUsername(SecurityContextHolder.getContext().getAuthentication().getName()).orElseThrow(
-                ()-> new SpringRedditException("User not found")
+                ()-> new UserNotFoundException("User not found")
         );
         log.info("User {} is creating post",user.getUsername());
         Post post = postMapper.map(postRequest,subRedditRepository.findSubRedditByName(postRequest.getSubredditName()).

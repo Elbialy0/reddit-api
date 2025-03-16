@@ -38,19 +38,17 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .csrf(csrf->csrf.disable())
-                .cors(corsConfig->corsConfig.configurationSource(new CorsConfigurationSource() {
-                    @Override
-                    public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
-                        CorsConfiguration corsConfiguration = new CorsConfiguration();
-                        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
-                        corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
-                        corsConfiguration.setAllowCredentials(true);
-                        corsConfiguration.setExposedHeaders(Collections.singletonList("*"));
-                        corsConfiguration.setMaxAge(3600L);
-                        corsConfiguration.setExposedHeaders(Arrays.asList("Authorization"));
-                        return corsConfiguration;
-                    }
+                .cors(corsConfig -> corsConfig.configurationSource(request -> {
+                    CorsConfiguration corsConfiguration = new CorsConfiguration();
+                    corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:5173")); // Allow frontend origin
+                    corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Explicit methods
+                    corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Explicit allowed headers
+                    corsConfiguration.setExposedHeaders(Arrays.asList("Authorization")); // Expose Authorization header
+                    corsConfiguration.setAllowCredentials(true);
+                    corsConfiguration.setMaxAge(3600L); // Cache preflight requests for 1 hour
+                    return corsConfiguration;
                 }))
+
                 .addFilterBefore(JwtValidatorFilter, UsernamePasswordAuthenticationFilter.class)// disable csrf
                 .authorizeHttpRequests(auth->auth.requestMatchers("/api/auth/**",                    "/swagger-ui/**",  // Allow Swagger UI
                                 "/v3/api-docs/**", // Allow OpenAPI JSON

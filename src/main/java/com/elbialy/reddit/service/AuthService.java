@@ -1,7 +1,9 @@
 package com.elbialy.reddit.service;
 
 import com.elbialy.reddit.dto.RegisterRequest;
+import com.elbialy.reddit.dto.UserDto;
 import com.elbialy.reddit.exceptions.SpringRedditException;
+import com.elbialy.reddit.exceptions.UserNotFoundException;
 import com.elbialy.reddit.model.NotificationEmail;
 import com.elbialy.reddit.model.RefreshToken;
 import com.elbialy.reddit.model.User;
@@ -54,18 +56,22 @@ public class AuthService {
         return token;
     }
 
-    public void verifyAccount(String token) {
+    public UserDto verifyAccount(String token) {
       Optional<VerificationToken> actualToken = verificationTokenRepository.findVerificationTokenByToken(token);
         actualToken.orElseThrow(()->new SpringRedditException("Invalid token!"));
-        fetchUser(actualToken);
+       User user =  fetchUser(actualToken);
+       UserDto userDto = new UserDto(user.getUsername(), user.getEmail());
+       return userDto;
+
 
     }
 @Transactional
-    public void fetchUser(Optional<VerificationToken> actualToken) {
-        User user = userRepository.findById(actualToken.get().getUser().getId()).orElseThrow(()->new SpringRedditException("User not found with name:"));
+    public User fetchUser(Optional<VerificationToken> actualToken) {
+        User user = userRepository.findById(actualToken.get().getUser().getId()).orElseThrow(()->new UserNotFoundException("User not found with name:"));
         user.setEnabled(true);
         log.info("User {} is enabled",user.isEnabled());
         userRepository.save(user);
+        return user;
 
     }
     @Transactional
