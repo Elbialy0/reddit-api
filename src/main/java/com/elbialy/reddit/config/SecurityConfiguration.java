@@ -1,5 +1,6 @@
 package com.elbialy.reddit.config;
 
+import com.elbialy.reddit.exceptions.CustomBasicAuthenticationEntryPoint;
 import com.elbialy.reddit.filter.JwtValidatorFilter;
 import com.elbialy.reddit.mapper.SubRedditMapper;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,6 +56,7 @@ public class SecurityConfiguration {
                                 "/swagger-resources/**",
                                 "/webjars/**","/error").permitAll()
                 .anyRequest().authenticated());// make "/api/auth/**" public and other endpoints private
+        http.httpBasic(hbc->hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
 
         return http.build();
     }

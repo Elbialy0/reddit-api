@@ -21,8 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -111,7 +113,7 @@ public class AuthService {
             jwt = jwtGenerator.jwtGenerator(authenticationResponse);
             RefreshToken refreshToken = refreshTokenService.createRefreshToken();
         }
-        else throw new AccessDeniedException("Bad credentials");
+        else throw new BadCredentialsException("Bad credentials");
         return new LoginResponse(jwt, HttpStatus.OK.toString());
 
     }

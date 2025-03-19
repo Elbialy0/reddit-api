@@ -13,7 +13,6 @@ import java.rmi.AccessException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Objects;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
