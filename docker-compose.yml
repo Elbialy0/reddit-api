@@ -1,0 +1,40 @@
+services:
+  mysql:
+    container_name: my_sql_container
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: spring-reddit-clone
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpassword
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - reddit_network
+
+  spring-boot:
+    container_name: reddit-api
+    image: bialllllly/reddit-api:v1
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://my_sql_container:3306/spring-reddit-clone
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: userpassword
+    ports:
+      - "8080:8080"
+    networks:
+      - reddit_network
+
+
+
+    depends_on:
+      - mysql
+volumes:
+  mysql_data:
+
+networks:
+  reddit_network:
+    driver: bridge
+
+
